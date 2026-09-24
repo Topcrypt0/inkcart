@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { isAddress } from 'viem';
 import {
-  useBalance, useBlockNumber, useConnection, useReadContract, useSwitchChain, useWaitForTransactionReceipt, useWriteContract,
+  useBalance, useConnection, useReadContract, useSwitchChain, useWaitForTransactionReceipt, useWriteContract,
 } from 'wagmi';
 import { INK_ID } from './config.js';
 import { useConnectModal } from './ConnectModal.jsx';
@@ -29,14 +29,12 @@ function streakOf(gms, now) {
 }
 
 function RecentFeed({ me }) {
-  const { data: block } = useBlockNumber({ chainId: INK_ID, query: { refetchInterval: 20_000 } });
   const now = useNow();
-  const bucket = block ? Number(block / 20n) * 20 : null; // refetch every ~20 blocks, not every block
-  const recent = useQuery({ queryKey: ['recentGms', bucket], enabled: !!bucket, queryFn: () => fetchRecentGms(bucket, 600), placeholderData: (p) => p });
+  const recent = useQuery({ queryKey: ['recentGms'], queryFn: () => fetchRecentGms(600), refetchInterval: 20_000, placeholderData: (p) => p });
   const list = recent.data || [];
   return (
     <div className="card">
-      <div className="card-head"><h2>Live on Ink</h2><span className="muted">{recent.isLoading ? '…' : `${list.length}${list.length >= 1000 ? '+' : ''} GMs in the last 10 min`}</span></div>
+      <div className="card-head"><h2>Live on Ink</h2><span className="muted">{recent.isLoading ? '…' : recent.isError && !list.length ? 'feed unavailable' : `${list.length} GMs in the last 10 min`}</span></div>
       <div className="gm-feed">
         {list.slice(0, 12).map((g) => (
           <a key={g.tx} className={`gm-row ${me && g.actor.toLowerCase() === me.toLowerCase() ? 'me' : ''}`} href={`${EXPLORER}/tx/${g.tx}`} target="_blank" rel="noopener">
@@ -46,7 +44,7 @@ function RecentFeed({ me }) {
             <span className="muted t">{ago(Math.max(0, now - g.time))}</span>
           </a>
         ))}
-        {!recent.isLoading && !list.length && <p className="muted">Quiet right now. Be the first.</p>}
+        {!recent.isLoading && !recent.isError && !list.length && <p className="muted">Quiet right now. Be the first.</p>}
       </div>
     </div>
   );
@@ -145,8 +143,8 @@ export function GmView({ active }) {
 
         <div className="gm-side">
           <div className="kpis small gm-kpis">
-            <div className="kpi"><div className="label">Your GMs</div><div className="value">{registered ? (history.isLoading ? '…' : gms.length) : '—'}</div><div className="sub">on gm.ink v2</div></div>
-            <div className="kpi"><div className="label">Streak</div><div className="value">{registered ? `${streak} ${streak === 1 ? 'day' : 'days'}` : '—'}</div><div className="sub">GMs under 48 h apart</div></div>
+            <div className="kpi"><div className="label">Your GMs</div><div className="value">{registered ? (history.isLoading ? '…' : history.isError ? '—' : gms.length) : '—'}</div><div className="sub">on gm.ink v2</div></div>
+            <div className="kpi"><div className="label">Streak</div><div className="value">{registered && !history.isError ? (history.isLoading ? '…' : `${streak} ${streak === 1 ? 'day' : 'days'}`) : '—'}</div><div className="sub">GMs under 48 h apart</div></div>
             <div className="kpi"><div className="label">Last GM</div><div className="value">{lastTs ? ago(Math.max(0, now - lastTs)) : '—'}</div><div className="sub">{lastTs ? new Date(lastTs * 1000).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' }) : 'never'}</div></div>
             <div className="kpi"><div className="label">Next GM</div><div className="value mono">{!registered ? '—' : wait > 0 ? hms(wait) : 'now'}</div><div className="sub">24 h cooldown</div></div>
           </div>

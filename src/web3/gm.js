@@ -27,24 +27,45 @@ export const gmAbi = parseAbi([
 const ZERO32 = '0x0000000000000000000000000000000000000000000000000000000000000000';
 export const hasProfile = (id) => !!id && id !== ZERO32;
 
-const LOGS = 'https://explorer.inkonchain.com/api?module=logs&action=getLogs';
+const BLOCKSCOUT = 'https://explorer.inkonchain.com/api/v2';
+const RPC = 'https://rpc-gel.inkonchain.com';
 
-// Every ranked GM of one profile (Blockscout caps a page at 1000, far above any single profile).
+// Every ranked GM of one profile. Blockscout v2 matches the profile id in any topic, so keep only GMExecuted.
+// (The Etherscan-style /api logs endpoint has a tight per-IP limit; v2 allows far more.)
 export async function fetchProfileGms(profileId) {
-  const url = `${LOGS}&address=${GM_ADDRESS}&topic0=${GM_EXECUTED_TOPIC}&topic1=${profileId}&topic0_1_opr=and&fromBlock=0&toBlock=latest`;
-  const r = await (await fetch(url)).json();
-  return (r.result || []).map((l) => ({ time: parseInt(l.timeStamp, 16), tx: l.transactionHash }));
+  const out = [];
+  let params = '';
+  for (let page = 0; page < 10; page++) {
+    const res = await fetch(`${BLOCKSCOUT}/addresses/${GM_ADDRESS}/logs?topic=${profileId}${params}`);
+    if (!res.ok) throw new Error(`${res.status} explorer`);
+    const d = await res.json();
+    for (const l of d.items || []) {
+      if (l.topics?.[0] === GM_EXECUTED_TOPIC && l.topics?.[1] === profileId) {
+        out.push({ time: Math.floor(Date.parse(l.block_timestamp) / 1000), tx: l.transaction_hash });
+      }
+    }
+    if (!d.next_page_params) break;
+    params = '&' + new URLSearchParams(d.next_page_params).toString();
+  }
+  return out.sort((a, b) => a.time - b.time);
 }
 
-// Ranked GMs across Ink over roughly the last `seconds` (Ink makes a block per second).
-export async function fetchRecentGms(latestBlock, seconds = 600) {
-  const url = `${LOGS}&address=${GM_ADDRESS}&topic0=${GM_EXECUTED_TOPIC}&fromBlock=${latestBlock - seconds}&toBlock=latest`;
-  const r = await (await fetch(url)).json();
-  return (r.result || [])
+async function rpc(method, params) {
+  const r = await (await fetch(RPC, { method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) })).json();
+  if (r.error) throw new Error(r.error.message);
+  return r.result;
+}
+
+// Ranked GMs across Ink over roughly the last `seconds` (one block per second), straight from the RPC.
+export async function fetchRecentGms(seconds = 600) {
+  const latest = parseInt(await rpc('eth_blockNumber', []), 16);
+  const logs = await rpc('eth_getLogs', [{ address: GM_ADDRESS, topics: [GM_EXECUTED_TOPIC], fromBlock: '0x' + (latest - seconds).toString(16), toBlock: 'latest' }]);
+  return logs
     .map((l) => ({
       actor: '0x' + l.topics[2].slice(26),
       recipient: /^0x0+$/.test(l.topics[3]) ? null : '0x' + l.topics[3].slice(26),
-      time: parseInt(l.timeStamp, 16),
+      time: parseInt(l.blockTimestamp, 16),
       tx: l.transactionHash,
     }))
     .reverse();
