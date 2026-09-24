@@ -8,5 +8,29 @@
       "source": "/api/lifi/:path*",
       "destination": "/api/lifi?path=:path*"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "inkultracart.vercel.app"
+        }
+      ],
+      "destination": "https://inkcart.xyz/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "inkcart-ashy.vercel.app"
+        }
+      ],
+      "destination": "https://inkcart.xyz/$1",
+      "permanent": true
+    }
   ]
 }
