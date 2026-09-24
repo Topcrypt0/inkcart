@@ -3,6 +3,8 @@
 Everything on Ink in one place: tokens, xStocks, NFTs, Nado perps, lending rates, points.
 A static site with no build step and no backend. Every number except the NFT floors loads live in the browser.
 
+**Live:** https://inkcart-ashy.vercel.app. Every push to `main` deploys automatically (Vercel project `inkcart`, team `topcrypt0s-projects`).
+
 ## Run locally
 
 ```bash
