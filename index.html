@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>INK CART — everything on Ink</title>
+  <meta name="description" content="Tokens, NFTs, xStocks, perps, lending rates and points on Ink, in one place. Live data." />
+  <meta name="theme-color" content="#0b0a12" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237132F5'/%3E%3Cpath d='M6 9h3l2.4 10.5h11L25 12H11' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='13' cy='24' r='1.8' fill='white'/%3E%3Ccircle cx='21' cy='24' r='1.8' fill='white'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-row">
+      <a class="brand" href="#overview" aria-label="INK CART home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--accent)"/><path d="M6 9h3l2.4 10.5h11L25 12H11" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="13" cy="24" r="1.8" fill="#fff"/><circle cx="21" cy="24" r="1.8" fill="#fff"/></svg>
+        <span>INK<b>CART</b></span>
+      </a>
+      <div class="chain-pill" id="chainPill" title="Latest Ink block from the public RPC">
+        <span class="dot"></span><span id="chainPillText">Ink · connecting…</span>
+      </div>
+    </div>
+    <nav class="wrap tabs" id="tabs" aria-label="Sections">
+      <a href="#overview" data-tab="overview">Overview</a>
+      <a href="#tokens" data-tab="tokens">Tokens</a>
+      <a href="#xstocks" data-tab="xstocks">xStocks</a>
+      <a href="#nfts" data-tab="nfts">NFTs</a>
+      <a href="#perps" data-tab="perps">Perps</a>
+      <a href="#lend" data-tab="lend">Lending</a>
+      <a href="#points" data-tab="points">Points</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <!-- OVERVIEW -->
+    <section id="overview" class="view">
+      <div class="hero">
+        <h1>Everything on Ink, in one cart.</h1>
+        <p>Tokens, NFTs, tokenized stocks, perps, lending and points on Kraken's L2. Live numbers, one click to buy.</p>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>Chain TVL</h2><span class="muted" id="tvlRange">last 180 days</span></div>
+          <div id="tvlChart" class="chart"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>DEX volume · 24h</h2><a class="muted" href="https://defillama.com/dexs/chain/ink" target="_blank" rel="noopener">DefiLlama ↗</a></div>
+          <div id="dexList"></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>Top protocols by TVL</h2><a class="muted" href="https://defillama.com/chain/ink" target="_blank" rel="noopener">DefiLlama ↗</a></div>
+          <div id="protocolList"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Fees · 24h</h2><a class="muted" href="https://defillama.com/fees/chain/ink" target="_blank" rel="noopener">DefiLlama ↗</a></div>
+          <div id="feeList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOKENS -->
+    <section id="tokens" class="view" hidden>
+      <div class="view-head">
+        <div>
+          <h1>Tokens</h1>
+          <p class="muted">Ecosystem picks plus whatever is trending on Ink DEXes right now. Click a row for the chart.</p>
+        </div>
+        <input class="search" id="tokenSearch" type="search" placeholder="Search name, ticker or 0x…" aria-label="Search tokens" />
+      </div>
+      <div class="card flush"><div id="tokenTable"></div></div>
+    </section>
+
+    <!-- XSTOCKS -->
+    <section id="xstocks" class="view" hidden>
+      <div class="view-head">
+        <div>
+          <h1>xStocks on Ink</h1>
+          <p class="muted">Wrapped Backed xStocks: 1:1 tokenized US equities. Trade spot on Nado or in Ink DEX pools (Quotrons).</p>
+        </div>
+      </div>
+      <div class="card flush"><div id="xstockTable"></div></div>
+      <p class="fine">Pool prices can drift from the underlying share price outside US market hours. Always check the contract before buying.</p>
+    </section>
+
+    <!-- NFTS -->
+    <section id="nfts" class="view" hidden>
+      <div class="view-head">
+        <div>
+          <h1>NFTs on Ink</h1>
+          <p class="muted" id="nftNote"></p>
+        </div>
+        <div class="chips" id="nftSort">
+          <button data-sort="featured" class="on">Featured</button>
+          <button data-sort="floor">Floor</button>
+          <button data-sort="vol1d">24h volume</button>
+          <button data-sort="owners">Holders</button>
+        </div>
+      </div>
+      <div class="nft-grid" id="nftGrid"></div>
+    </section>
+
+    <!-- PERPS -->
+    <section id="perps" class="view" hidden>
+      <div class="view-head">
+        <div>
+          <h1>Perps · Nado</h1>
+          <p class="muted">Nado is the orderbook DEX on Ink for perps, spot and margin. Live from the Nado API.</p>
+        </div>
+        <div class="chips" id="perpFilter">
+          <button data-group="all" class="on">All</button>
+          <button data-group="crypto">Crypto</button>
+          <button data-group="stocks">Stocks</button>
+          <button data-group="commodities">Commodities</button>
+          <button data-group="fx">FX</button>
+        </div>
+      </div>
+      <div class="kpis small" id="perpKpis"></div>
+      <div class="card flush"><div id="perpTable"></div></div>
+    </section>
+
+    <!-- LENDING -->
+    <section id="lend" class="view" hidden>
+      <div class="view-head">
+        <div>
+          <h1>Lending rates</h1>
+          <p class="muted">Where your stablecoins, ETH and BTC earn most on Ink: Tydro (Aave v3) next to Nado's money market.</p>
+        </div>
+      </div>
+      <div class="card flush"><div id="lendTable"></div></div>
+      <p class="fine">Rates are variable and change every block. Tydro via DefiLlama Yields; Nado via its public API.</p>
+    </section>
+
+    <!-- POINTS -->
+    <section id="points" class="view" hidden>
+      <div class="view-head">
+        <div>
+          <h1>Points &amp; airdrops</h1>
+          <p class="muted">Every live points program on Ink, and the latest Nado trading-competition leaderboard.</p>
+        </div>
+      </div>
+      <div class="points-grid" id="pointsGrid"></div>
+      <div class="card flush">
+        <div class="card-head pad"><h2 id="lbTitle">Nado trading competition</h2><span class="muted" id="lbMeta"></span></div>
+        <div id="lbTable"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <p>Data: <a href="https://defillama.com/chain/ink" target="_blank" rel="noopener">DefiLlama</a> · <a href="https://dexscreener.com/ink" target="_blank" rel="noopener">DexScreener</a> · <a href="https://www.geckoterminal.com/ink/pools" target="_blank" rel="noopener">GeckoTerminal</a> · <a href="https://docs.nado.xyz" target="_blank" rel="noopener">Nado API</a> · <a href="https://opensea.io/collections/chain/ink" target="_blank" rel="noopener">OpenSea</a> · Ink RPC</p>
+    <p>Not financial advice. Anyone can deploy a token with any name: always check the contract address.</p>
+  </footer>
+
+  <dialog id="chartModal" class="modal">
+    <div class="modal-head">
+      <div id="modalTitle"></div>
+      <button class="icon-btn" id="modalClose" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body"><iframe id="modalFrame" title="Price chart"></iframe></div>
+    <div class="modal-foot" id="modalLinks"></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
