@@ -17,7 +17,6 @@
     nadoContracts: 'https://api.prod.nado.xyz/archive/v2/contracts',
     nadoSpot: 'https://api.prod.nado.xyz/archive/v2/tickers?market=spot',
     nadoApr: 'https://api.prod.nado.xyz/gateway/v2/apr',
-    nadoRewards: 'https://api.prod.nado.xyz/rewards/v1',
     rpc: 'https://rpc-gel.inkonchain.com',
   };
   const LINKS = {
@@ -28,7 +27,7 @@
     gtPool: (p) => `https://www.geckoterminal.com/ink/pools/${p}`,
     opensea: (slug) => `https://opensea.io/collection/${slug}`,
     seadn: (path) => `https://i2c.seadn.io/${path}${path.includes('?') ? '&' : '?'}h=360&w=360`,
-    nado: 'https://app.nado.xyz',
+    nado: 'https://app.nado.xyz?join=kripto1', // referral link
     quotrons: 'https://www.quotrons.cash',
   };
 
@@ -167,12 +166,29 @@
     const m = $('#chartModal');
     $('#modalTitle').innerHTML = title;
     $('#modalFrame').src = LINKS.dsEmbed(pair);
-    $('#modalLinks').innerHTML = links.map((l) => `<a class="btn ${l.ghost ? 'ghost' : ''}" href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join('');
+    $('#modalLinks').innerHTML = links
+      .map((l) => (l.buy
+        ? buyBtn(l.buy, l.label)
+        : `<a class="btn ${l.ghost ? 'ghost' : ''}" href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)}</a>`))
+      .join('');
     m.showModal();
   }
   $('#modalClose').addEventListener('click', () => $('#chartModal').close());
   $('#chartModal').addEventListener('click', (e) => { if (e.target.id === 'chartModal') e.target.close(); });
   $('#chartModal').addEventListener('close', () => { $('#modalFrame').src = 'about:blank'; });
+
+  // "Buy" never leaves the site: it hands the token to the LI.FI widget on the Swap & Bridge tab (src/web3).
+  const buyBtn = (addr, label = 'Buy', cls = '') =>
+    `<button class="btn ${cls}" data-buy="${esc(addr)}" title="Swap into this token on INK ULTRA CART">${esc(label)}</button>`;
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-buy]');
+    if (!b) return;
+    e.stopPropagation();
+    if ($('#chartModal').open) $('#chartModal').close();
+    window.__iucPending = { token: b.dataset.buy, side: 'buy' };
+    window.dispatchEvent(new CustomEvent('iuc:buy', { detail: window.__iucPending }));
+    location.hash = '#swap';
+  });
 
   document.addEventListener('click', async (e) => {
     const b = e.target.closest('[data-copy]');
@@ -368,7 +384,8 @@
       title: `<div class="tok">${logo(r.image, r.symbol)}<div><span class="sym">${esc(r.symbol)}</span> <span class="muted">${price(r.price)}</span><div class="nm mono">${esc(r.address)}</div></div></div>`,
       pair: r.pair,
       links: [
-        { label: 'Trade on DexScreener', href: LINKS.dsPair(r.pair) },
+        { label: `Buy ${r.symbol}`, buy: r.address },
+        { label: 'DexScreener', href: LINKS.dsPair(r.pair), ghost: true },
         { label: 'GeckoTerminal', href: LINKS.gtPool(r.pair), ghost: true },
         { label: 'Explorer', href: LINKS.explorerToken(r.address), ghost: true },
         ...(r.x ? [{ label: '@' + r.x, href: 'https://x.com/' + r.x, ghost: true }] : []),
@@ -413,7 +430,7 @@
         { label: 'Liquidity', cell: (r) => usd(r.liq), sort: (r) => r.liq, cls: 'hide-sm' },
         { label: 'Volume 24h', cell: (r) => usd(r.vol), sort: (r) => r.vol, cls: 'hide-sm' },
         { label: 'Contract', cell: (r) => caChip(r.address), cls: 'hide-sm' },
-        { label: '', cell: (r) => `<a class="btn" href="${LINKS.dsPair(r.pair)}" target="_blank" rel="noopener">Buy</a>` },
+        { label: '', cell: (r) => buyBtn(r.address) },
       ];
       tokenTable = table(el, cols, tokenRows, { sortIndex: 5, onRow: openToken });
       applyTokenSearch();
@@ -468,7 +485,7 @@
         { label: 'Nado vol 24h', cell: (r) => usd(r.nadoVol), sort: (r) => r.nadoVol, cls: 'hide-sm' },
         { label: 'On Nado', cell: (r) => usd(r.nadoTvl), sort: (r) => r.nadoTvl, cls: 'hide-sm' },
         { label: 'Contract', cell: (r) => caChip(r.address), cls: 'hide-sm' },
-        { label: '', cell: (r) => `<span class="actions"><a class="btn" href="${LINKS.nado}" target="_blank" rel="noopener">Nado</a>${r.pair ? `<a class="btn ghost" href="${LINKS.dsPair(r.pair)}" target="_blank" rel="noopener">DEX</a>` : ''}</span>` },
+        { label: '', cell: (r) => `<span class="actions">${r.address ? buyBtn(r.address) : ''}<a class="btn ghost" href="${LINKS.nado}" target="_blank" rel="noopener">Nado</a></span>` },
       ];
       table(el, cols, rows, {
         sortIndex: 3,
@@ -476,7 +493,8 @@
           title: `<div class="tok">${logo(r.image, r.symbol)}<div><span class="sym">${esc(r.symbol)}</span> <span class="muted">${esc(r.name)}</span><div class="nm mono">${esc(r.address)}</div></div></div>`,
           pair: r.pair,
           links: [
-            { label: 'Trade on Nado', href: LINKS.nado },
+            { label: `Buy ${r.symbol}`, buy: r.address },
+            { label: 'Trade on Nado', href: LINKS.nado, ghost: true },
             { label: 'Quotrons pools', href: LINKS.quotrons, ghost: true },
             { label: 'DexScreener', href: LINKS.dsPair(r.pair), ghost: true },
             { label: 'Explorer', href: LINKS.explorerToken(r.address), ghost: true },
@@ -627,52 +645,6 @@
     }
   }
 
-  // ---------- POINTS ----------
-  async function loadPoints() {
-    const statusCls = (s) => (s === 'Live' ? 'live' : s === 'Pre-TGE' ? 'pre' : 'boost');
-    $('#pointsGrid').innerHTML = D.points
-      .map((p) => `
-        <div class="pt">
-          <div class="row"><b>${esc(p.name)}</b><span class="status ${statusCls(p.status)}">${esc(p.status)}</span></div>
-          <div class="by">${esc(p.by)}</div>
-          <p>${esc(p.body)}</p>
-          <a class="btn ghost" href="${esc(p.link)}" target="_blank" rel="noopener">${esc(p.linkLabel)} ↗</a>
-        </div>`)
-      .join('');
-
-    const el = $('#lbTable');
-    el.innerHTML = loading(8);
-    try {
-      const { contests = [] } = await postJSON(API.nadoRewards, { leaderboard_contests: {} });
-      if (!contests.length) { el.innerHTML = '<div class="loading">No Nado competitions yet.</div>'; return; }
-      const c = contests.find((x) => x.active) || [...contests].sort((a, b) => Number(b.end_time) - Number(a.end_time))[0];
-      const track = c.tracks.find((t) => t.rank_type === 'volume') || c.tracks[0];
-      const end = new Date(Number(c.end_time) * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-      $('#lbTitle').textContent = c.title;
-      $('#lbMeta').textContent = `${c.active ? 'live' : 'ended ' + end} · ${intFmt(c.count)} traders · ranked by ${track.rank_type}`;
-      const { positions = [] } = await postJSON(API.nadoRewards, { leaderboard: { contest_id: c.contest_id, rank_type: track.rank_type, start: 0, limit: 25 } });
-      const rows = positions.map((p) => {
-        const addr = '0x' + p.subaccount.slice(2, 42);
-        const tw = (p.social_accounts || []).find((s) => s.provider === 'twitter');
-        return {
-          rank: Number(p.tracks[track.rank_type]?.rank), addr, tw,
-          volume: num(p.tracks.volume?.value), roi: p.tracks.roi ? num(p.tracks.roi.value) * 100 : null, value: num(p.account_value),
-        };
-      });
-      const cols = [
-        { label: '#', left: true, sort: (r) => r.rank, cell: (r) => `<b>${r.rank}</b>` },
-        { label: 'Trader', left: true, cell: (r) => (r.tw ? `<a href="https://x.com/${esc(r.tw.username)}" target="_blank" rel="noopener">@${esc(r.tw.username)}</a> <span class="mono muted hide-sm">${shortAddr(r.addr)}</span>` : `<a class="mono" href="${LINKS.explorerAddr(r.addr)}" target="_blank" rel="noopener">${shortAddr(r.addr)}</a>`) },
-        { label: 'Volume', sort: (r) => r.volume, cell: (r) => usd(r.volume) },
-        { label: 'ROI', sort: (r) => r.roi, cell: (r) => pct(r.roi, 1) },
-        { label: 'Account', sort: (r) => r.value, cell: (r) => usd(r.value), cls: 'hide-sm' },
-      ];
-      table(el, cols, rows, { sortIndex: 0, asc: true });
-    } catch (e) {
-      el.innerHTML = errorBox(e.message);
-      throw e;
-    }
-  }
-
   // ---------- chain pill ----------
   async function pollChain() {
     try {
@@ -692,7 +664,8 @@
   }
 
   // ---------- router ----------
-  const loaders = { overview: loadOverview, tokens: loadTokens, xstocks: loadXstocks, nfts: loadNfts, perps: loadPerps, lend: loadLend, points: loadPoints };
+  const noop = () => Promise.resolve(); // swap + wallet are rendered by the React island in src/web3
+  const loaders = { overview: loadOverview, tokens: loadTokens, xstocks: loadXstocks, nfts: loadNfts, perps: loadPerps, lend: loadLend, swap: noop, wallet: noop };
   const loadedAt = {};
   const REFRESH_MS = 60 * 1000;
 

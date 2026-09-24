@@ -49,6 +49,8 @@ button { font: inherit; color: inherit; }
 .top-row { display: flex; align-items: center; justify-content: space-between; height: 60px; }
 .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: 0.04em; font-size: 17px; }
 .brand b { color: var(--accent-2); font-weight: 800; }
+.brand i { font-style: normal; color: var(--text); background: var(--accent); border-radius: 5px; padding: 0 5px; font-size: 13px; letter-spacing: 0.08em; }
+.top-right { display: flex; align-items: center; gap: 10px; }
 .brand-mark { width: 30px; height: 30px; }
 .chain-pill {
   display: flex; align-items: center; gap: 8px; white-space: nowrap;
@@ -213,6 +215,50 @@ tbody tr.click:hover { background: var(--surface-2); }
 .foot p { margin: 4px 0; }
 .foot a { color: var(--muted); }
 
+/* Wallet button + menu */
+.wallet-btn { position: relative; }
+.wallet-btn .btn { gap: 8px; }
+.wicon { width: 18px; height: 18px; border-radius: 4px; }
+.wallet-menu {
+  position: absolute; right: 0; top: calc(100% + 6px); min-width: 190px; z-index: 30;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 6px;
+  display: flex; flex-direction: column; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+.wallet-menu a, .wallet-menu button {
+  text-align: left; background: none; border: 0; padding: 9px 10px; border-radius: 8px; font-size: 14px; cursor: pointer; color: var(--text);
+}
+.wallet-menu a:hover, .wallet-menu button:hover { background: var(--surface-2); color: var(--text); }
+
+/* Connect modal */
+.modal.connect { width: min(420px, calc(100vw - 24px)); }
+.connect-list { display: flex; flex-direction: column; gap: 8px; padding: 4px 16px 12px; }
+.connect-item {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; cursor: pointer;
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--text); font-weight: 600; text-align: left;
+}
+.connect-item:hover:not(:disabled) { border-color: var(--accent); }
+.connect-item img { width: 28px; height: 28px; border-radius: 7px; }
+.connect-item .muted { margin-left: auto; font-weight: 400; font-size: 13px; }
+.connect-empty p { margin: 4px 0; }
+.error.small { padding: 4px 0; font-size: 13px; }
+.fine.pad { padding: 0 16px 16px; }
+
+/* Swap & Bridge, Wallet */
+.swap-root { min-height: 560px; }
+.view-inner { display: flex; flex-direction: column; gap: 18px; }
+.lookup { display: flex; gap: 8px; flex-wrap: wrap; }
+.lookup .search { width: 320px; }
+.empty-state { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.empty-state p { margin: 0; }
+.empty-state.inline { padding: 18px; }
+.unpriced { padding: 12px 18px 16px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+.unpriced summary { cursor: pointer; }
+.unpriced ul { margin: 10px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px 16px; }
+.nft-grid.small { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.nft-grid.small .meta { padding: 10px 12px; gap: 2px; }
+.nft-grid.small .title { font-size: 13px; }
+.nft-grid.small .note { font-size: 12px; min-height: 0; }
+
 @media (max-width: 1000px) {
   .kpis { grid-template-columns: repeat(3, 1fr); }
   .grid-2 { grid-template-columns: 1fr; }
@@ -226,7 +272,9 @@ tbody tr.click:hover { background: var(--surface-2); }
   .search { width: 100%; }
   .hide-sm { display: none; }
   th, td { padding: 10px 10px; }
-  .chain-pill { font-size: 11px; padding: 5px 9px; }
+  .chain-pill { display: none; }
+  .brand { font-size: 15px; }
+  .lookup .search { width: 100%; }
   .nft-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .nft .stats { grid-template-columns: repeat(2, 1fr); }
   .nft .stats div:nth-child(3) { display: none; }

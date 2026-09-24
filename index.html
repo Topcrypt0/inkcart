@@ -3,24 +3,26 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>INK CART — everything on Ink</title>
-  <meta name="description" content="Tokens, NFTs, xStocks, perps, lending rates and points on Ink, in one place. Live data." />
+  <title>INK ULTRA CART — everything on Ink</title>
+  <meta name="description" content="Tokens, NFTs, xStocks, perps and lending on Ink in one place. Swap and bridge from any chain to Ink right on the page." />
   <meta name="theme-color" content="#0b0a12" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237132F5'/%3E%3Cpath d='M6 9h3l2.4 10.5h11L25 12H11' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='13' cy='24' r='1.8' fill='white'/%3E%3Ccircle cx='21' cy='24' r='1.8' fill='white'/%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="top">
     <div class="wrap top-row">
-      <a class="brand" href="#overview" aria-label="INK CART home">
+      <a class="brand" href="#overview" aria-label="INK ULTRA CART home">
         <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--accent)"/><path d="M6 9h3l2.4 10.5h11L25 12H11" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="13" cy="24" r="1.8" fill="#fff"/><circle cx="21" cy="24" r="1.8" fill="#fff"/></svg>
-        <span>INK<b>CART</b></span>
+        <span>INK <i>ULTRA</i> <b>CART</b></span>
       </a>
-      <div class="chain-pill" id="chainPill" title="Latest Ink block from the public RPC">
-        <span class="dot"></span><span id="chainPillText">Ink · connecting…</span>
+      <div class="top-right">
+        <div class="chain-pill" id="chainPill" title="Latest Ink block from the public RPC">
+          <span class="dot"></span><span id="chainPillText">Ink · connecting…</span>
+        </div>
+        <div id="walletSlot"><button class="btn" disabled>Connect wallet</button></div>
       </div>
     </div>
     <nav class="wrap tabs" id="tabs" aria-label="Sections">
@@ -30,7 +32,8 @@
       <a href="#nfts" data-tab="nfts">NFTs</a>
       <a href="#perps" data-tab="perps">Perps</a>
       <a href="#lend" data-tab="lend">Lending</a>
-      <a href="#points" data-tab="points">Points</a>
+      <a href="#swap" data-tab="swap">Swap &amp; Bridge</a>
+      <a href="#wallet" data-tab="wallet">Wallet</a>
     </nav>
   </header>
 
@@ -39,7 +42,7 @@
     <section id="overview" class="view">
       <div class="hero">
         <h1>Everything on Ink, in one cart.</h1>
-        <p>Tokens, NFTs, tokenized stocks, perps, lending and points on Kraken's L2. Live numbers, one click to buy.</p>
+        <p>Tokens, NFTs, tokenized stocks, perps and lending on Kraken's L2. Live numbers. Swap, bridge and buy right here.</p>
       </div>
       <div class="kpis" id="kpis"></div>
       <div class="grid-2">
@@ -112,6 +115,7 @@
           <h1>Perps · Nado</h1>
           <p class="muted">Nado is the orderbook DEX on Ink for perps, spot and margin. Live from the Nado API.</p>
         </div>
+        <a class="btn" href="https://app.nado.xyz?join=kripto1" target="_blank" rel="noopener">Trade perps on Nado ↗</a>
         <div class="chips" id="perpFilter">
           <button data-group="all" class="on">All</button>
           <button data-group="crypto">Crypto</button>
@@ -136,19 +140,21 @@
       <p class="fine">Rates are variable and change every block. Tydro via DefiLlama Yields; Nado via its public API.</p>
     </section>
 
-    <!-- POINTS -->
-    <section id="points" class="view" hidden>
+    <!-- SWAP & BRIDGE -->
+    <section id="swap" class="view" hidden>
       <div class="view-head">
         <div>
-          <h1>Points &amp; airdrops</h1>
-          <p class="muted">Every live points program on Ink, and the latest Nado trading-competition leaderboard.</p>
+          <h1>Swap &amp; Bridge</h1>
+          <p class="muted">Move funds to Ink from 60+ EVM chains, Solana or Bitcoin, or swap any Ink token. Routing by LI.FI: best price across bridges and DEXes.</p>
         </div>
       </div>
-      <div class="points-grid" id="pointsGrid"></div>
-      <div class="card flush">
-        <div class="card-head pad"><h2 id="lbTitle">Nado trading competition</h2><span class="muted" id="lbMeta"></span></div>
-        <div id="lbTable"></div>
-      </div>
+      <div id="swapRoot" class="swap-root"><div class="loading"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div></div>
+      <p class="fine">You sign every transaction in your own wallet. INK ULTRA CART never holds your funds.</p>
+    </section>
+
+    <!-- WALLET -->
+    <section id="wallet" class="view" hidden>
+      <div id="walletRoot"><div class="loading"><div class="skeleton"></div><div class="skeleton"></div></div></div>
     </section>
   </main>
 
@@ -168,7 +174,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="data.js"></script>
-  <script src="app.js"></script>
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>

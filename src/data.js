@@ -83,48 +83,5 @@ window.INK_DATA = {
     stocks: ['AAPL', 'AMD', 'AMZN', 'AVGO', 'BBX', 'CRCL', 'DELL', 'GOOGL', 'HIMS', 'INTC', 'LLY', 'META', 'MRVL', 'MSFT', 'MSTR', 'MU', 'NBIS', 'NVDA', 'ORCL', 'PENG', 'QQQ', 'SKHY', 'SNDK', 'SPCX', 'SPY', 'TSLA', 'ZHIPU'],
     commodities: ['WTI', 'XAG', 'XAUT'],
     fx: ['EURUSD', 'GBPUSD', 'USDJPY'],
-  },
-
-  points: [
-    {
-      name: '$INK airdrop',
-      by: 'Ink Foundation · Kraken',
-      status: 'Pre-TGE',
-      body: '1B fixed supply. Reported eligibility: real usage on Ink, Kraken Pro activity, Nado trading and Tydro liquidity. Token not trading yet.',
-      link: 'https://blog.kraken.com/news/integrating-ink-token',
-      linkLabel: 'Kraken blog',
-    },
-    {
-      name: 'Nado Points — Season 2',
-      by: 'Nado',
-      status: 'Live',
-      body: 'Weekly points for trading, maker orders, open interest and liquidations. Not raw volume.',
-      link: 'https://app.nado.xyz/points',
-      linkLabel: 'Open Nado',
-    },
-    {
-      name: 'xPoints on Nado',
-      by: 'Nado · xStocks',
-      status: 'Live',
-      body: 'Points for holding and trading wrapped xStocks on Nado.',
-      link: 'https://docs.nado.xyz/incentives-and-rewards/xpoints-on-nado',
-      linkLabel: 'Docs',
-    },
-    {
-      name: 'Quotrons Builder Points',
-      by: 'Quotrons',
-      status: 'Live',
-      body: '20M floating builder points for projects that fund the Terminal Pot, Growth Sink or $INK buybacks. Non-transferable.',
-      link: 'https://www.quotrons.cash/builders',
-      linkLabel: 'Leaderboard',
-    },
-    {
-      name: 'Templars of the Storm',
-      by: 'Nado NFT',
-      status: 'NFT boost',
-      body: 'Holding a Templar multiplies Nado points and unlocks VIP fee tiers.',
-      link: 'https://opensea.io/collection/templars-of-the-storm',
-      linkLabel: 'OpenSea',
-    },
-  ],
+  }
 };
