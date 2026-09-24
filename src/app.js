@@ -179,7 +179,7 @@
 
   // "Buy" never leaves the site: it hands the token to the LI.FI widget on the Swap & Bridge tab (src/web3).
   const buyBtn = (addr, label = 'Buy', cls = '') =>
-    `<button class="btn ${cls}" data-buy="${esc(addr)}" title="Swap into this token on INK ULTRA CART">${esc(label)}</button>`;
+    `<button class="btn ${cls}" data-buy="${esc(addr)}" title="Swap into this token on INK CART">${esc(label)}</button>`;
   document.addEventListener('click', (e) => {
     const b = e.target.closest('[data-buy]');
     if (!b) return;

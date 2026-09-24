@@ -4,6 +4,9 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/api/lifi/:path*", "destination": "/api/lifi?path=:path*" }
+    {
+      "source": "/api/lifi/:path*",
+      "destination": "/api/lifi?path=:path*"
+    }
   ]
 }

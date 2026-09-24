@@ -1,8 +1,8 @@
-# INK ULTRA CART
+# INK CART
 
 Everything on Ink in one place: tokens, xStocks, NFTs, Nado perps and lending rates, plus a wallet view and swap & bridge on the page itself.
 
-**Live:** https://inkultracart.vercel.app. Every push to `main` deploys automatically (Vercel project `inkcart`, team `topcrypt0s-projects`).
+**Live:** https://inkcart.xyz (domain bought through Vercel; `www` and the old `*.vercel.app` hosts redirect to it). Every push to `main` deploys automatically (Vercel project `inkcart`, team `topcrypt0s-projects`).
 
 ## Run locally
 
@@ -36,7 +36,7 @@ DefiLlama (TVL, DEX volume, fees, stablecoins, protocols, Tydro yields), DexScre
 
 ## To do
 
-1. **LI.FI integrator fee.** Create the integrator `inkultracart` with a fee wallet in the LI.FI partner portal, then add `feeConfig` in `src/web3/Widget.jsx`.
+1. **LI.FI integrator fee.** Create the integrator `inkcart` with a fee wallet in the LI.FI partner portal, then add `feeConfig` in `src/web3/Widget.jsx`.
 2. **WalletConnect.** A free Reown project ID adds mobile wallets via QR (Kraken Wallet, Rainbow, …).
 3. **Live NFT floors** through an OpenSea API key (serverless proxy, like `api/lifi.js`).
 4. **Nado trading on-site** via the Nado TypeScript SDK. This is an Ink Spark grant priority.

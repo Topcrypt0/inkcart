@@ -8,7 +8,7 @@ import { useConnectModal } from './ConnectModal.jsx';
 
 const NATIVE = '0x0000000000000000000000000000000000000000';
 // Must match the integrator name in the LI.FI partner portal for fees and volume stats to be attributed.
-export const INTEGRATOR = 'inkultracart';
+export const INTEGRATOR = 'inkcart';
 
 export default function Widget() {
   const formRef = useRef(null);
