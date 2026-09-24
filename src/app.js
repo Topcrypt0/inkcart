@@ -665,7 +665,7 @@
 
   // ---------- router ----------
   const noop = () => Promise.resolve(); // swap + wallet are rendered by the React island in src/web3
-  const loaders = { overview: loadOverview, tokens: loadTokens, xstocks: loadXstocks, nfts: loadNfts, perps: loadPerps, lend: loadLend, swap: noop, wallet: noop };
+  const loaders = { overview: loadOverview, tokens: loadTokens, xstocks: loadXstocks, nfts: loadNfts, perps: loadPerps, lend: loadLend, swap: noop, wallet: noop, gm: noop };
   const loadedAt = {};
   const REFRESH_MS = 60 * 1000;
 

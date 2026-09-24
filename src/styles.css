@@ -258,9 +258,37 @@ tbody tr.click:hover { background: var(--surface-2); }
 .nft-grid.small .title { font-size: 13px; }
 .nft-grid.small .note { font-size: 12px; min-height: 0; }
 
+/* Daily GM */
+.tabs a.gm-tab { color: #ffd166; }
+.tabs a.gm-tab.on { color: var(--text); }
+.gm-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 18px; align-items: start; }
+.gm-card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 34px 26px; background: radial-gradient(420px 260px at 50% 0%, rgba(255, 209, 102, 0.16), transparent 70%), var(--surface); }
+.gm-sun { font-size: 84px; line-height: 1; filter: drop-shadow(0 0 24px rgba(255, 209, 102, 0.55)); animation: gmspin 18s linear infinite; }
+.gm-sun.pop { animation: gmpop 0.9s cubic-bezier(.2, 1.6, .4, 1), gmspin 18s linear 0.9s infinite; }
+@keyframes gmspin { to { transform: rotate(360deg); } }
+@keyframes gmpop { 0% { transform: scale(0.4); } 60% { transform: scale(1.25); } 100% { transform: scale(1); } }
+.gm-title { font-size: 26px; font-weight: 800; }
+.gm-btn { font-size: 20px; padding: 14px 34px; border-radius: 14px; min-width: 240px; justify-content: center; }
+.gm-btn.done { background: var(--surface-2); color: var(--up); border: 1px solid var(--line); }
+.btn:disabled { opacity: 0.6; cursor: default; }
+.gm-btn.done:disabled { opacity: 1; }
+.gm-next { margin: 0; color: var(--muted); }
+.gm-next b { color: var(--text); font-size: 18px; }
+.gm-mode { justify-content: center; }
+.gm-fren { width: 100%; max-width: 360px; }
+.gm-side { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.gm-kpis { grid-template-columns: repeat(2, 1fr); }
+.gm-feed { display: flex; flex-direction: column; }
+.gm-row { display: grid; grid-template-columns: 26px auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); font-size: 14px; }
+.gm-row:first-child { border-top: 0; }
+.gm-row .muted { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gm-row .t { font-size: 12.5px; }
+.gm-row.me { color: #ffd166; }
+
 @media (max-width: 1000px) {
   .kpis { grid-template-columns: repeat(3, 1fr); }
   .grid-2 { grid-template-columns: 1fr; }
+  .gm-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
   .wrap { padding: 0 16px; }

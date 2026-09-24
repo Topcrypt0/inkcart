@@ -8,6 +8,7 @@ import { ConnectModalProvider } from './ConnectModal.jsx';
 import { WalletButton } from './WalletButton.jsx';
 import { SwapView } from './SwapView.jsx';
 import { WalletView } from './WalletView.jsx';
+import { GmView } from './GmView.jsx';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, refetchOnWindowFocus: false } } });
 
@@ -34,6 +35,7 @@ function Island() {
       {createPortal(<WalletButton />, document.getElementById('walletSlot'))}
       {swapMounted && createPortal(<SwapView />, document.getElementById('swapRoot'))}
       {createPortal(<WalletView active={tab === 'wallet'} />, document.getElementById('walletRoot'))}
+      {tab === 'gm' && createPortal(<GmView active />, document.getElementById('gmRoot'))}
     </>
   );
 }
@@ -42,7 +44,7 @@ const host = document.createElement('div');
 host.id = 'web3-island';
 document.body.appendChild(host);
 // Portals render into these; clear the static placeholders first.
-['walletSlot', 'walletRoot', 'swapRoot'].forEach((id) => { document.getElementById(id).innerHTML = ''; });
+['walletSlot', 'walletRoot', 'swapRoot', 'gmRoot'].forEach((id) => { document.getElementById(id).innerHTML = ''; });
 
 createRoot(host).render(
   <StrictMode>
